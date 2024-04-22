@@ -1,5 +1,5 @@
 const express = require("express");
-const { connectDb, getDb } = require("./database");
+const { connectDb, getDb } = require("../database");
 const cors = require("cors");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
