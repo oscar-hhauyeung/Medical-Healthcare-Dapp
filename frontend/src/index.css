@@ -1,0 +1,19 @@
+/* global style */
+@font-face {
+  font-family: "GT Walsheim";
+  src: url("./assets/fonts/GT-Walsheim-Regular.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "GT Walsheim";
+  src: url("./assets/fonts/GT-Walsheim-Bold.ttf") format("truetype");
+  font-weight: bold;
+}
+
+body {
+  font-family: "GT Walsheim";
+}
+
+h1 {
+  font-weight: bold; /* This will use the bold version of GT Walsheim */
+}

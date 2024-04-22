@@ -1,0 +1,66 @@
+.navbarComponent .menu-bars {
+  margin-left: 2rem;
+  font-size: 2rem;
+  background: none;
+  color: #000;
+}
+
+.navbarComponent .nav-menu {
+  background-color: #d9d9d9;
+  width: 250px;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  position: fixed;
+  top: 20;
+  left: -100%;
+  transition: 850ms;
+}
+
+.navbarComponent .nav-menu.active {
+  left: 0;
+  transition: 450ms;
+}
+
+.navbarComponent .nav-text {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  padding: 8px 0px 8px 16px;
+  list-style: none;
+  height: 60px;
+}
+
+.navbarComponent .nav-text a {
+  text-decoration: none;
+  color: #151414;
+  font-size: 18px;
+  width: 95%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+  border-radius: 4px;
+}
+
+.navbarComponent .nav-text a:hover {
+  background-color: #000000;
+  color: #fff;
+}
+
+.navbarComponent .nav-menu-items {
+  width: 100%;
+}
+
+.navbarComponent .navbar-toggle {
+  background-color: #d9d9d9;
+  width: 100%;
+  height: 80px;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.navbarComponent span {
+  margin-left: 16px;
+}
