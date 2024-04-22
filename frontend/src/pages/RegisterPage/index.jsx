@@ -4,6 +4,7 @@ import "./RegisterPage.css";
 import { useNavigate } from "react-router-dom";
 
 const RegistrationForm = () => {
+  const apiUrl = process.env.REACT_APP_API_URL || "http://localhost:8080";
   const navigate = useNavigate();
   // get the userType from the URL path
   const { userType } = useParams();
@@ -103,7 +104,7 @@ const RegistrationForm = () => {
     };
 
     // Perform API call to register the user
-    const response = await fetch("http://localhost:8080/register", {
+    const response = await fetch(`${apiUrl}/register`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(user),
@@ -247,7 +248,6 @@ const RegistrationForm = () => {
         </form>
       </div>
     </div>
-    
   );
 };
 

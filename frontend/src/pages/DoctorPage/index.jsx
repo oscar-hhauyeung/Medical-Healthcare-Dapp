@@ -9,6 +9,7 @@ import MedicalAppAbi from "../../MedicalApp.json";
 const ethers = require("ethers");
 
 function DoctorPage() {
+  const apiUrl = process.env.REACT_APP_API_URL || "http://localhost:8080";
   const cookies = new Cookies();
   const navigate = useNavigate();
   const data = [
@@ -217,7 +218,7 @@ function DoctorPage() {
 
   // authenticate user
   useEffect(() => {
-    fetch("http://localhost:8080/auth-endpoint", {
+    fetch(`${apiUrl}/auth-endpoint`, {
       method: "GET",
       headers: {
         Authorization: `Bearer ${cookies.get("auth")}`,

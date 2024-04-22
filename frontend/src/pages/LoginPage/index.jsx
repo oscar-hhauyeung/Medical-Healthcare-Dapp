@@ -1,10 +1,11 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import './LoginPage.css'
-import logo from './photo.png'
+import "./LoginPage.css";
+import logo from "./photo.png";
 import Cookies from "universal-cookie";
 
 function LoginPage() {
+  const apiUrl = process.env.REACT_APP_API_URL || "http://localhost:8080";
   console.log(logo);
   const navigate = useNavigate();
   const cookies = new Cookies();
@@ -27,7 +28,7 @@ function LoginPage() {
       setError("MetaMask not detected");
     }
   };
-  
+
   // State to manage login form inputs
   const [userType, setUserType] = useState("patient"); // ["patient", "doctor"]
   const [email, setUsername] = useState("");
@@ -50,7 +51,8 @@ function LoginPage() {
     }
 
     // Perform API call to login the user
-    fetch("http://localhost:8080/login", {
+    // fetch("http://localhost:8080/login", {
+    fetch(`${apiUrl}/login`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -77,55 +79,65 @@ function LoginPage() {
   return (
     <div className="login-page">
       <div className="container">
-      <div className="login-page-image">
-        <img src = {logo} alt = "Logo"/>
+        <div className="login-page-image">
+          <img src={logo} alt="Logo" />
         </div>
-      <form onSubmit={handleLogin} autoComplete="on" className="form">
-        <div className="header">Login</div>
-        <div className = "form_setup">
-          <label>Usertype:
-          <select
-            value={userType}
-            onChange={(e) => setUserType(e.target.value)}
-          >
-            <option value="patient">Patient</option>
-            <option value="doctor">Doctor</option>
-          </select>
-          </label>
-          <br />
-          <label>
-          Email:
-          <input
-            type="email"
-            value={email}
-            placeholder="Type your email" 
-            onChange={(e) => setUsername(e.target.value)}
-          />
-          </label>
-          <br />
-          <label>
-          Password:
-          <input
-            type="password"
-            value={password}
-            placeholder="Type your password" 
-            onChange={(e) => setPassword(e.target.value)}
-          />
-          </label>
-          <br />
-          <button onClick={handleLogin}>Login</button>
-          <button type="button" onClick={() => navigate(`/register/${userType}`)}>
-          Register
-          </button>
-          <br />
-          {error && <p style={{ color: "red" }}>{error}</p>}
-          
-          <br/>
-          <button type="button" onClick={handleConnectMetaMask}>
-              Connect With MetaMask</button>
-          <br/>
-          <a className="login-page-link" href="your-password-reset-url">Forgot your password?</a>
-        </div></form></div></div>
+        <form onSubmit={handleLogin} autoComplete="on" className="form">
+          <div className="header">Login</div>
+          <div className="form_setup">
+            <label>
+              Usertype:
+              <select
+                value={userType}
+                onChange={(e) => setUserType(e.target.value)}
+              >
+                <option value="patient">Patient</option>
+                <option value="doctor">Doctor</option>
+              </select>
+            </label>
+            <br />
+            <label>
+              Email:
+              <input
+                type="email"
+                value={email}
+                placeholder="Type your email"
+                onChange={(e) => setUsername(e.target.value)}
+              />
+            </label>
+            <br />
+            <label>
+              Password:
+              <input
+                type="password"
+                value={password}
+                placeholder="Type your password"
+                onChange={(e) => setPassword(e.target.value)}
+              />
+            </label>
+            <br />
+            <button onClick={handleLogin}>Login</button>
+            <button
+              type="button"
+              onClick={() => navigate(`/register/${userType}`)}
+            >
+              Register
+            </button>
+            <br />
+            {error && <p style={{ color: "red" }}>{error}</p>}
+
+            <br />
+            <button type="button" onClick={handleConnectMetaMask}>
+              Connect With MetaMask
+            </button>
+            <br />
+            <a className="login-page-link" href="your-password-reset-url">
+              Forgot your password?
+            </a>
+          </div>
+        </form>
+      </div>
+    </div>
   );
 }
 

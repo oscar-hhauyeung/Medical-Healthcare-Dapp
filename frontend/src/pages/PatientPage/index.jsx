@@ -10,6 +10,7 @@ import MedicalAppAbi from "../../MedicalApp.json";
 import { ethers } from "ethers";
 
 function PatientPage() {
+  const apiUrl = process.env.REACT_APP_API_URL || "http://localhost:8080";
   const cookies = new Cookies();
   const navigate = useNavigate();
 
@@ -97,7 +98,7 @@ function PatientPage() {
   console.log(info);
   console.log(del);
   useEffect(() => {
-    fetch("http://localhost:8080/auth-endpoint", {
+    fetch(`${apiUrl}/auth-endpoint`, {
       method: "GET",
       headers: {
         Authorization: `Bearer ${cookies.get("auth")}`,
@@ -190,15 +191,12 @@ function PatientPage() {
   const getdoctorInfo = (doctor) => async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch(
-        `http://localhost:8080/doctor-info/${doctor}`,
-        {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${cookies.get("auth")}`,
-          },
-        }
-      );
+      const response = await fetch(`${apiUrl}/doctor-info/${doctor}`, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${cookies.get("auth")}`,
+        },
+      });
       const data = await response.json();
       if (data.error) {
         alert(data.error);
