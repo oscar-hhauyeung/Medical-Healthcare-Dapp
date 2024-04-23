@@ -1,12 +1,21 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import "./LoginPage.css";
-import logo from "./photo.png";
+import NETS from "vanta/src/vanta.net";
+import * as THREE from "three";
 import Cookies from "universal-cookie";
+import "./LoginPage.css";
 
 function LoginPage() {
-  const apiUrl = process.env.REACT_APP_API_URL || "http://localhost:8080";
-  console.log(logo);
+  const apiUrl = process.env.API_URL || "http://localhost:8080";
+  useEffect(() => {
+    console.log("API URL:", apiUrl);
+    NETS({
+      el: "#background",
+      THREE: THREE,
+      backgroundColor: 0x0,
+    });
+  }, [apiUrl]);
+
   const navigate = useNavigate();
   const cookies = new Cookies();
   const [walletAddress, setWalletAddress] = useState("");
@@ -29,29 +38,23 @@ function LoginPage() {
     }
   };
 
-  // State to manage login form inputs
-  const [userType, setUserType] = useState("patient"); // ["patient", "doctor"]
+  const [userType, setUserType] = useState("patient");
   const [email, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
-  // Function to handle form submission
   const handleLogin = (e) => {
     e.preventDefault();
-    // check if the email is valid
     let emailRegex = /\S+@\S+\.\S+/;
     if (!emailRegex.test(email)) {
       setError("Please enter a valid email");
       return;
     }
-    // check if password is empty
     if (!password) {
       setError("Please enter a password");
       return;
     }
 
-    // Perform API call to login the user
-    // fetch("http://localhost:8080/login", {
     fetch(`${apiUrl}/login`, {
       method: "POST",
       headers: {
@@ -64,10 +67,7 @@ function LoginPage() {
         if (data.error) {
           setError(data.error);
         } else {
-          // Store the JWT token in the browser's cookies
           cookies.set("auth", data.accessToken, { path: "/" });
-
-          // Redirect the user to the home page
           navigate(`${userType}`);
         }
       })
@@ -77,65 +77,99 @@ function LoginPage() {
   };
 
   return (
-    <div className="login-page">
-      <div className="container">
-        <div className="login-page-image">
-          <img src={logo} alt="Logo" />
+    <div
+      className="bg-gray-200 min-h-screen flex justify-center items-center background-container"
+      id="background"
+    >
+      <div className="bg-white rounded-lg shadow p-8 max-w-md w-full">
+        <div className="text-center">
+          {/* <img src={logo} alt="Logo" className="mx-auto w-20 mb-4" /> */}
+          <h1 className="text-2xl font-bold mb-4">Login</h1>
         </div>
-        <form onSubmit={handleLogin} autoComplete="on" className="form">
-          <div className="header">Login</div>
-          <div className="form_setup">
-            <label>
-              Usertype:
-              <select
-                value={userType}
-                onChange={(e) => setUserType(e.target.value)}
-              >
-                <option value="patient">Patient</option>
-                <option value="doctor">Doctor</option>
-              </select>
+        <form onSubmit={handleLogin} autoComplete="on">
+          <div className="mb-4">
+            <label
+              htmlFor="userType"
+              className="block text-sm font-medium text-gray-700"
+            >
+              User Type:
             </label>
-            <br />
-            <label>
+            <select
+              id="userType"
+              value={userType}
+              onChange={(e) => setUserType(e.target.value)}
+              className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
+            >
+              <option value="patient">Patient</option>
+              <option value="doctor">Doctor</option>
+            </select>
+          </div>
+          <div className="mb-4">
+            <label
+              htmlFor="email"
+              className="block text-sm font-medium text-gray-700"
+            >
               Email:
-              <input
-                type="email"
-                value={email}
-                placeholder="Type your email"
-                onChange={(e) => setUsername(e.target.value)}
-              />
             </label>
-            <br />
-            <label>
+            <input
+              type="email"
+              id="email"
+              value={email}
+              placeholder="Type your email"
+              onChange={(e) => setUsername(e.target.value)}
+              className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
+            />
+          </div>
+          <div className="mb-4">
+            <label
+              htmlFor="password"
+              className="block text-sm font-medium text-gray-700"
+            >
               Password:
-              <input
-                type="password"
-                value={password}
-                placeholder="Type your password"
-                onChange={(e) => setPassword(e.target.value)}
-              />
             </label>
-            <br />
-            <button onClick={handleLogin}>Login</button>
+            <input
+              type="password"
+              id="password"
+              value={password}
+              placeholder="Type your password"
+              onChange={(e) => setPassword(e.target.value)}
+              className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
+            />
+          </div>
+          <div className="mb-4 flex justify-between items-center">
+            <button
+              type="submit"
+              className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
+            >
+              Login
+            </button>
             <button
               type="button"
               onClick={() => navigate(`/register/${userType}`)}
+              className="text-blue-500 hover:underline"
             >
               Register
             </button>
-            <br />
-            {error && <p style={{ color: "red" }}>{error}</p>}
-
-            <br />
-            <button type="button" onClick={handleConnectMetaMask}>
-              Connect With MetaMask
-            </button>
-            <br />
-            <a className="login-page-link" href="your-password-reset-url">
+          </div>
+          {error && <p className="text-red-500">{error}</p>}
+        </form>
+        <div className="mt-4 text-center">
+          <button
+            type="button"
+            onClick={handleConnectMetaMask}
+            className="bg-gray-300 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-400"
+          >
+            Connect With MetaMask
+          </button>
+          <p className="text-sm text-gray-600 mt-2">
+            <a
+              href="your-password-reset-url"
+              className="text-blue-500 hover:underline"
+            >
               Forgot your password?
             </a>
-          </div>
-        </form>
+          </p>
+        </div>
       </div>
     </div>
   );

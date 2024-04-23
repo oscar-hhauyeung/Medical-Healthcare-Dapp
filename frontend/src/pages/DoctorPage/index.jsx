@@ -172,6 +172,7 @@ function DoctorPage() {
         const { ethereum } = window;
         if (!ethereum) {
           alert("MetaMask not detected. Please install MetaMask.");
+          navigate("/");
           return;
         }
 
