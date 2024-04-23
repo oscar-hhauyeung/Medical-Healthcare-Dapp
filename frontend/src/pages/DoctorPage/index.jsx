@@ -5,7 +5,6 @@ import { useNavigate } from "react-router-dom";
 import { MedicalAppContractAddress } from "../../config";
 import MedicalAppAbi from "../../MedicalApp.json";
 import Navbar from "../../components/Navbar";
-import "./DoctorPage.css";
 const ethers = require("ethers");
 
 function DoctorPage() {
@@ -23,9 +22,10 @@ function DoctorPage() {
   const [newInfo, setNewInfo] = useState("");
 
   const [currentAccount, setCurrentAccount] = useState("");
-  const [showInstruction, setShowInstruction] = useState(false);
 
   useEffect(() => {
+    let isMounted = true;
+
     // Function to insert words into spans one by one
     const insertWords = async () => {
       const words = [
@@ -37,16 +37,22 @@ function DoctorPage() {
       for (let i = 0; i < words.length; i++) {
         const instructionChar =
           document.querySelectorAll(".instruction-char")[i];
-        instructionChar.textContent = "";
-        for (let j = 0; j < words[i].length; j++) {
-          instructionChar.textContent += words[i][j];
-          await new Promise((resolve) => setTimeout(resolve, 10));
+        if (instructionChar && isMounted) {
+          instructionChar.textContent = "";
+          for (let j = 0; j < words[i].length; j++) {
+            instructionChar.textContent += words[i][j];
+            await new Promise((resolve) => setTimeout(resolve, 10));
+          }
+          await new Promise((resolve) => setTimeout(resolve, 100));
         }
-        await new Promise((resolve) => setTimeout(resolve, 100));
       }
     };
 
     insertWords();
+
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   // get medical records from blockchain
