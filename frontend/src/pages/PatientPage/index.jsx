@@ -10,7 +10,7 @@ import MedicalAppAbi from "../../MedicalApp.json";
 import { ethers } from "ethers";
 
 function PatientPage() {
-  const apiUrl = process.env.REACT_APP_API_URL || "http://localhost:8080";
+  const apiUrl = process.env.API_URL || "http://localhost:8080";
   const cookies = new Cookies();
   const navigate = useNavigate();
 

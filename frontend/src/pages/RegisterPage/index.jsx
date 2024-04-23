@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import MetaMask from "../../assets/images/metamask.svg";
 
 const RegistrationForm = () => {
-  const apiUrl = process.env.REACT_APP_API_URL || "http://localhost:8080";
+  const apiUrl = process.env.API_URL || "http://localhost:8080";
   const navigate = useNavigate();
   // get the userType from the URL path
   const { userType } = useParams();

@@ -30,7 +30,10 @@ app.use(express.json());
 // CORS configuration
 app.use(
   cors({
-    origin: "https://medical-healthcare-dapp-89o9.vercel.app",
+    origin: [
+      "https://medical-healthcare-dapp-89o9.vercel.app",
+      "http://localhost:3000",
+    ],
     methods: ["GET", "POST"],
     credentials: true,
   })
