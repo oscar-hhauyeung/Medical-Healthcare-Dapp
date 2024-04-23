@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { MedicalAppContractAddress } from "../../config";
 import MedicalAppAbi from "../../MedicalApp.json";
 import Navbar from "../../components/Navbar";
+import "./DoctorPage.css";
 const ethers = require("ethers");
 
 function DoctorPage() {
@@ -22,6 +23,31 @@ function DoctorPage() {
   const [newInfo, setNewInfo] = useState("");
 
   const [currentAccount, setCurrentAccount] = useState("");
+  const [showInstruction, setShowInstruction] = useState(false);
+
+  useEffect(() => {
+    // Function to insert words into spans one by one
+    const insertWords = async () => {
+      const words = [
+        "To view a patient's medical records, enter the patient's MetaMask wallet address and click on the search button. To add a new medical record, click on the green button on the right.",
+        "Note: You can only view medical records of patients who have authorized you to do so.",
+        "Upload medical records to the blockchain requires a gas fee. Please make sure you have enough SepoliaETH in your MetaMask wallet.",
+      ];
+
+      for (let i = 0; i < words.length; i++) {
+        const instructionChar =
+          document.querySelectorAll(".instruction-char")[i];
+        instructionChar.textContent = "";
+        for (let j = 0; j < words[i].length; j++) {
+          instructionChar.textContent += words[i][j];
+          await new Promise((resolve) => setTimeout(resolve, 10));
+        }
+        await new Promise((resolve) => setTimeout(resolve, 100));
+      }
+    };
+
+    insertWords();
+  }, []);
 
   // get medical records from blockchain
   const handleSearch = async (event) => {
@@ -256,6 +282,29 @@ function DoctorPage() {
               <h1 className="text-2xl font-bold mb-2">Doctor Dashboard</h1>
               <p className="text-sm">Your wallet address: {currentAccount}</p>
             </div>
+            {/* Instruction */}
+            <div className="p-6 h-[200px] overflow-y-hidden">
+              <p className="text-sm mb-4 text-gray-600">
+                <span className="instruction-char">
+                  {/* To view a patient's medical records, enter the patient's
+                  MetaMask wallet address and click on the search button. To add
+                  a new medical record, click on the green button on the right. */}
+                </span>
+              </p>
+              <p className="text-sm mb-4 text-gray-600">
+                <span className="instruction-char">
+                  {/* Note: You can only view medical records of patients who have
+                  authorized you to do so. */}
+                </span>
+              </p>
+              <p className="text-sm mb-4 text-gray-600">
+                <span className="instruction-char">
+                  {/* Upload medical records to the blockchain requires a gas fee.
+                  Please make sure you have enough SepoliaETH in your MetaMask
+                  wallet. */}
+                </span>
+              </p>
+            </div>
             <div className="p-6 h-[500px]">
               <div className="mb-6">
                 <p className="text-lg font-bold mb-2">
@@ -265,7 +314,7 @@ function DoctorPage() {
                   <input
                     className="border border-gray-300 rounded-md px-4 py-2 w-full mr-2"
                     type="text"
-                    placeholder="Enter Patient's Wallet Address"
+                    placeholder="Enter Patient's MetaMask Wallet Address"
                     value={patientWalletAddress}
                     onChange={(e) => setPatientWalletAddress(e.target.value)}
                   />

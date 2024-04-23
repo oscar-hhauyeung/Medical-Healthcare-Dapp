@@ -11,12 +11,6 @@ export const SidebarData = [
     icon: <FaIcons.FaClinicMedical />,
   },
   {
-    title: "Medical Record",
-    cName: "nav-text",
-    userType: "patient",
-    icon: <FaIcons.FaBookMedical />,
-  },
-  {
     title: "Booking",
     cName: "nav-text",
     userType: "patient",
