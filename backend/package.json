@@ -2,7 +2,7 @@
   "name": "csci2730-project-backend",
   "version": "1.0.0",
   "description": "",
-  "main": "api/server.js",
+  "main": "index.js",
   "scripts": {
     "devStart": "nodemon server.js"
   },
