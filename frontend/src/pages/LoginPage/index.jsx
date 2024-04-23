@@ -6,7 +6,7 @@ import Cookies from "universal-cookie";
 import "./LoginPage.css";
 
 function LoginPage() {
-  const apiUrl = process.env.REACT_APP_API_URL;
+  const apiUrl = process.env.REACT_APP_API_URL || "http://localhost:8080";
   useEffect(() => {
     console.log("API URL:", apiUrl);
     NETS({
