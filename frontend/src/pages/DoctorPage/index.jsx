@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from "react";
-import "./DoctorPage.css";
-import Navbar from "../../components/Navbar";
 import * as FaIcons from "react-icons/fa";
 import Cookies from "universal-cookie";
 import { useNavigate } from "react-router-dom";
 import { MedicalAppContractAddress } from "../../config";
 import MedicalAppAbi from "../../MedicalApp.json";
+import Navbar from "../../components/Navbar";
 const ethers = require("ethers");
 
 function DoctorPage() {
@@ -243,91 +242,107 @@ function DoctorPage() {
   }, []);
 
   return (
-    <div className="doctorPage">
-      <div className="container">
-        <div className="header">
-          <div className="header-1">csci2730-project</div>
-          <div className="header-2">
-            {/* {currentAccount ? (
-              `Your wallet address is: ${currentAccount}`
-            ) : (
-              <button onClick={connectWallet}>Connect Wallet</button>
-            )} */}
-            Your wallet address is: {currentAccount}
-          </div>
-        </div>
-        <div className="body">
-          <Navbar userType="doctor" />
-          <div className="body-1">
-            <p>Patient Medical Records</p>
-            <form onSubmit={handleSearch}>
-              <input
-                className="searchPatient"
-                type="text"
-                placeholder="Enter Patient's Wallet Address"
-                value={patientWalletAddress}
-                onChange={(e) => setPatientWalletAddress(e.target.value)}
-              />
-              <button className="searchBtn" type="submit">
-                <FaIcons.FaSearch />
-                <span>Search</span>
-              </button>
-            </form>
-            <br></br>
-            <table>
-              <thead>
-                <tr>
-                  <th>Date</th>
-                  <th>Information</th>
-                  <th>
-                    <button className="newRecordBtn" onClick={handleOpenModal}>
-                      <FaIcons.FaCloudUploadAlt />
-                      <span>New Record</span>
-                    </button>
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {MedicalRecords?.map((item, index) => (
-                  <tr key={index} className="tr-row">
-                    <td>{item.date}</td>
-                    <td colSpan="2" className="info">
-                      {item.info}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+    <div className="bg-gray-100 min-h-screen grid grid-cols-10">
+      {/* Navbar */}
+      <div className="col-span-2">
+        <Navbar />
+      </div>
 
-            {showModal && (
-              <div className="modal">
-                <form onSubmit={handleCreate}>
-                  <h2>New Records</h2>
+      {/* Main Content */}
+      <div className="col-span-8">
+        <div className="mx-auto p-6">
+          <div className="bg-white shadow-md rounded-md h-full">
+            <div className="px-6 py-4 border-b border-gray-200">
+              <h1 className="text-2xl font-bold mb-2">Doctor Dashboard</h1>
+              <p className="text-sm">Your wallet address: {currentAccount}</p>
+            </div>
+            <div className="p-6">
+              <div className="mb-6">
+                <p className="text-lg font-bold mb-2">
+                  Patient Medical Records
+                </p>
+                <form onSubmit={handleSearch} className="flex items-center">
                   <input
+                    className="border border-gray-300 rounded-md px-4 py-2 w-full mr-2"
                     type="text"
-                    placeholder="Type the date"
-                    value={newDate}
-                    onChange={(e) => setNewDate(e.target.value)}
+                    placeholder="Enter Patient's Wallet Address"
+                    value={patientWalletAddress}
+                    onChange={(e) => setPatientWalletAddress(e.target.value)}
                   />
-                  <input
-                    type="text"
-                    placeholder="Type the information"
-                    value={newInfo}
-                    onChange={(e) => setNewInfo(e.target.value)}
-                  />
-                  <br></br>
-                  <button className="modalBtn" type="submit">
-                    Create
-                  </button>
-                  <button className="modalBtn" onClick={handleCloseModal}>
-                    Close
+                  <button
+                    className="bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600"
+                    type="submit"
+                  >
+                    <FaIcons.FaSearch />
                   </button>
                 </form>
               </div>
-            )}
-          </div>
-          <div className="body-2">
-            <p>Appointment Management</p>
+              <table className="w-full">
+                <thead>
+                  <tr>
+                    <th className="border-b border-gray-300 px-4 py-2">Date</th>
+                    <th className="border-b border-gray-300 px-4 py-2">
+                      Information
+                    </th>
+                    <th className="border-b border-gray-300 px-4 py-2 text-right">
+                      <button
+                        className="bg-green-500 text-white py-2 px-4 rounded-md hover:bg-green-600"
+                        onClick={handleOpenModal}
+                      >
+                        <FaIcons.FaCloudUploadAlt />
+                      </button>
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {MedicalRecords?.map((item, index) => (
+                    <tr key={index} className="border-b border-gray-300">
+                      <td className="px-4 py-2">{item.date}</td>
+                      <td className="px-4 py-2" colSpan="2">
+                        {item.info}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+              {showModal && (
+                <div className="fixed inset-0 flex items-center justify-center bg-gray-700 bg-opacity-50">
+                  <div className="bg-white p-6 rounded-md shadow-md">
+                    <form onSubmit={handleCreate}>
+                      <h2 className="text-lg font-bold mb-4">New Records</h2>
+                      <input
+                        className="border border-gray-300 rounded-md px-4 py-2 mb-2 w-full"
+                        type="text"
+                        placeholder="Enter the date"
+                        value={newDate}
+                        onChange={(e) => setNewDate(e.target.value)}
+                      />
+                      <input
+                        className="border border-gray-300 rounded-md px-4 py-2 mb-4 w-full"
+                        type="text"
+                        placeholder="Enter the information"
+                        value={newInfo}
+                        onChange={(e) => setNewInfo(e.target.value)}
+                      />
+                      <div className="flex justify-end">
+                        <button
+                          className="bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 mr-2"
+                          type="submit"
+                        >
+                          Create
+                        </button>
+                        <button
+                          className="bg-gray-400 text-white py-2 px-4 rounded-md hover:bg-gray-500"
+                          onClick={handleCloseModal}
+                        >
+                          Close
+                        </button>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </div>
