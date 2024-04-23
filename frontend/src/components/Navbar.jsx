@@ -44,6 +44,15 @@ function Navbar(props) {
                     </li>
                   );
                 })}
+                <li onClick={handleLogout}>
+                  <Link
+                    to="#"
+                    className="flex items-center p-4 hover:bg-gray-300"
+                  >
+                    <FaIcons.FaSignOutAlt />
+                    <span className="mx-4">Logout</span>
+                  </Link>
+                </li>
               </ul>
             </nav>
           </div>

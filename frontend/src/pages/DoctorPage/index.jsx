@@ -250,13 +250,13 @@ function DoctorPage() {
 
       {/* Main Content */}
       <div className="col-span-8">
-        <div className="mx-auto p-6">
-          <div className="bg-white shadow-md rounded-md h-full">
-            <div className="px-6 py-4 border-b border-gray-200">
+        <div className="mx-auto p-6 h-full">
+          <div className="bg-white shadow-md rounded-md">
+            <div className="px-6 py-4 border-b border-gray-200 h-full">
               <h1 className="text-2xl font-bold mb-2">Doctor Dashboard</h1>
               <p className="text-sm">Your wallet address: {currentAccount}</p>
             </div>
-            <div className="p-6">
+            <div className="p-6 h-[500px]">
               <div className="mb-6">
                 <p className="text-lg font-bold mb-2">
                   Patient Medical Records
