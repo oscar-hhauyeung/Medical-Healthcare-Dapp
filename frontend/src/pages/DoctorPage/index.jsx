@@ -8,7 +8,7 @@ import Navbar from "../../components/Navbar";
 const ethers = require("ethers");
 
 function DoctorPage() {
-  const apiUrl = process.env.API_URL || "http://localhost:8080";
+  const apiUrl = process.env.REACT_APP_API_URL || "http://localhost:8080";
   const cookies = new Cookies();
   const navigate = useNavigate();
   const data = [
