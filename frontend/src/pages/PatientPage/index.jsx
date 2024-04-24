@@ -65,7 +65,7 @@ function PatientPage() {
         "To give permission to a doctor, enter the doctor's MetaMask wallet address and click on the confirm button.",
         "To view a doctor's details, click on the info button.",
         "To delete a doctor's permission, click on the delete button.",
-        "Note: For give permission and delete permission, make sure you have enough SepoliaETH in your MetaMask wallet.",
+        "Note: For give permission and remove permission from a doctor, Please make sure you have enough SepoliaETH in your MetaMask wallet.",
       ];
 
       for (let i = 0; i < words.length; i++) {
@@ -377,7 +377,7 @@ function PatientPage() {
                 </div>
                 <div className="border border-gray-200 p-4 rounded-lg">
                   <div className="flex items-center mb-4">
-                    <div className="w-16 h-16 bg-gray-200 rounded-full mr-4"></div>
+                    <div className="w-24 h-24 bg-gray-200 rounded-full mr-4"></div>
                     <div>
                       <div className="text-lg font-bold text-gray-800">
                         {doctorInfo.name}
@@ -389,28 +389,24 @@ function PatientPage() {
                   </div>
                   <div className="mb-4">
                     <div className="flex items-center">
-                      <div className="w-6 h-6 bg-gray-200 rounded-full mr-2"></div>
                       <div className="text-gray-800">Wallet Address:</div>
                       <div className="ml-2 text-gray-600">
                         {doctorInfo.walletAddress}
                       </div>
                     </div>
                     <div className="flex items-center mt-2">
-                      <div className="w-6 h-6 bg-gray-200 rounded-full mr-2"></div>
                       <div className="text-gray-800">Email:</div>
                       <div className="ml-2 text-gray-600">
                         {doctorInfo.email}
                       </div>
                     </div>
                     <div className="flex items-center mt-2">
-                      <div className="w-6 h-6 bg-gray-200 rounded-full mr-2"></div>
                       <div className="text-gray-800">Registration Number:</div>
                       <div className="ml-2 text-gray-600">
                         {doctorInfo.registrationNumber}
                       </div>
                     </div>
                     <div className="flex items-center mt-2">
-                      <div className="w-6 h-6 bg-gray-200 rounded-full mr-2"></div>
                       <div className="text-gray-800">Hospital:</div>
                       <div className="ml-2 text-gray-600">
                         {doctorInfo.hospital}
