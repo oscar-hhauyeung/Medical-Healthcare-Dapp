@@ -3,8 +3,6 @@ import Cookies from "universal-cookie";
 import { useNavigate } from "react-router-dom";
 import "./PatientPage.css";
 import Navbar from "../../components/Navbar";
-// import info from "./info_icon.jpg";
-// import del from "./del_icon.png";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faInfoCircle, faTrashAlt } from "@fortawesome/free-solid-svg-icons";
 import { MedicalAppContractAddress } from "../../config";
@@ -354,13 +352,13 @@ function PatientPage() {
                           </div>
                           <div>
                             <button
-                              className="px-4 py-2 bg-sky-500/75 text-white font-semibold rounded-md hover:bg-blue-600 text-sm"
+                              className=" mr-2 px-2 py-1 bg-sky-500/75 text-white font-semibold rounded-md hover:bg-blue-600 text-sm"
                               onClick={getdoctorInfo(doctor)}
                             >
                               <FontAwesomeIcon icon={faInfoCircle} />
                             </button>
                             <button
-                              className="px-4 py-2 bg-red-500 text-white font-semibold rounded-md hover:bg-red-600 text-sm ml-2"
+                              className=" px-2 py-1 bg-red-500 text-white font-semibold rounded-md hover:bg-red-600 text-sm"
                               onClick={deleteDoctorPermit(doctor)}
                             >
                               <FontAwesomeIcon icon={faTrashAlt} />
