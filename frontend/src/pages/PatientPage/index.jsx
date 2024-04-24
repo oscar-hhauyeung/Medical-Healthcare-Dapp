@@ -3,24 +3,93 @@ import Cookies from "universal-cookie";
 import { useNavigate } from "react-router-dom";
 import "./PatientPage.css";
 import Navbar from "../../components/Navbar";
-import info from "./info_icon.jpg";
-import del from "./del_icon.png";
+// import info from "./info_icon.jpg";
+// import del from "./del_icon.png";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faInfoCircle, faTrashAlt } from "@fortawesome/free-solid-svg-icons";
 import { MedicalAppContractAddress } from "../../config";
 import MedicalAppAbi from "../../MedicalApp.json";
 import { ethers } from "ethers";
 
 function PatientPage() {
-  const apiUrl = process.env.REACT_APP_API_URL || "http://localhost:8080";
-  const cookies = new Cookies();
-  const navigate = useNavigate();
-
-  //get address
-  // const [address, setAddress] = useState("");
-  //state to store doc-info
   const [currentAccount, setCurrentAccount] = useState("");
   const [doctorWalletAddress, setDoctorWalletAddress] = useState("");
   const [authorizedDoctors, setAuthorizedDoctors] = useState([]);
   const [doctorInfo, setDoctorInfo] = useState("");
+  const apiUrl = process.env.REACT_APP_API_URL || "http://localhost:8080";
+  const cookies = new Cookies();
+  const navigate = useNavigate();
+
+  // get authorized doctors
+  useEffect(() => {
+    const fetchAuthorizedDoctors = async () => {
+      try {
+        const { ethereum } = window;
+        if (ethereum) {
+          const provider = new ethers.BrowserProvider(window.ethereum);
+          const signer = await provider.getSigner();
+          const MedicalContract = new ethers.Contract(
+            MedicalAppContractAddress,
+            MedicalAppAbi.abi,
+            signer
+          );
+
+          // Fetch the list of authorized doctors
+          const doctors = await MedicalContract.showDoctorPermit();
+          if (doctors.length === 0) {
+            return;
+          }
+          // filter out the empty addresses
+          // const doctorsFiltered = doctors.filter(
+          //   (doctor) => doctor !== "0x0000000000000000000000000000000000000000"
+          // );
+          // console.log(doctorsFiltered);
+          // setAuthorizedDoctors(doctorsFiltered);
+          setAuthorizedDoctors(doctors);
+        } else {
+          alert("Ethereum object doesn't exist!");
+        }
+      } catch (error) {
+        console.error(error);
+        alert("Error fetching authorized doctors");
+      }
+    };
+
+    fetchAuthorizedDoctors();
+  }, [currentAccount]);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    // Function to insert words into spans one by one
+    const insertWords = async () => {
+      const words = [
+        "To give permission to a doctor, enter the doctor's MetaMask wallet address and click on the confirm button.",
+        "To view a doctor's details, click on the info button.",
+        "To delete a doctor's permission, click on the delete button.",
+        "Note: For give permission and delete permission, make sure you have enough SepoliaETH in your MetaMask wallet.",
+      ];
+
+      for (let i = 0; i < words.length; i++) {
+        const instructionChar =
+          document.querySelectorAll(".instruction-char")[i];
+        if (instructionChar && isMounted) {
+          instructionChar.textContent = "";
+          for (let j = 0; j < words[i].length; j++) {
+            instructionChar.textContent += words[i][j];
+            await new Promise((resolve) => setTimeout(resolve, 10));
+          }
+          await new Promise((resolve) => setTimeout(resolve, 100));
+        }
+      }
+    };
+
+    insertWords();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   // Checks if user is connected to MetaMask wallet
   useEffect(() => {
@@ -95,8 +164,6 @@ function PatientPage() {
   }, []); // Empty dependency array to run the effect only once on mount
 
   // authenticate user
-  console.log(info);
-  console.log(del);
   useEffect(() => {
     fetch(`${apiUrl}/auth-endpoint`, {
       method: "GET",
@@ -155,38 +222,6 @@ function PatientPage() {
     }
   };
 
-  const fetchAuthorizedDoctors = async () => {
-    try {
-      const { ethereum } = window;
-      if (ethereum) {
-        const provider = new ethers.BrowserProvider(window.ethereum);
-        const signer = await provider.getSigner();
-        const MedicalContract = new ethers.Contract(
-          MedicalAppContractAddress,
-          MedicalAppAbi.abi,
-          signer
-        );
-
-        // Fetch the list of authorized doctors
-        const doctors = await MedicalContract.showDoctorPermit();
-        if (doctors.length === 0) {
-          alert("No authorized doctors");
-          return;
-        }
-        // filter out the empty addresses
-        // const doctorsFiltered = doctors.filter((doctor) => doctor !== "0x");
-        // console.log(doctorsFiltered);
-        // setAuthorizedDoctors(doctorsFiltered);
-        setAuthorizedDoctors(doctors);
-      } else {
-        alert("Ethereum object doesn't exist!");
-      }
-    } catch (error) {
-      console.error(error);
-      alert("Error fetching authorized doctors");
-    }
-  };
-
   // get doctor info from the backend server
   const getdoctorInfo = (doctor) => async (e) => {
     e.preventDefault();
@@ -241,98 +276,155 @@ function PatientPage() {
   };
 
   return (
-    <div className="patientPage">
-      <div className="container">
-        <div className="header">
-          <div className="header-1">csci2730-project</div>
-          <div className="header-2">
-            Your wallet address is: {currentAccount}
-          </div>
-        </div>
-        <div className="body">
-          <Navbar userType="patient" />
-          <div className="body-1">
-            <div className="block">
-              <div className="title">Access Control</div>
-              <input
-                className="input-field"
-                type="text"
-                placeholeder="Type the wallet address of the foctor"
-                value={doctorWalletAddress}
-                onChange={(e) => setDoctorWalletAddress(e.target.value)}
-              />
-              <button className="button" onClick={givePermission}>
-                Give Permission
-              </button>
+    <div className="flex h-screen">
+      <div className="w-2/12 bg-gray-200">
+        <Navbar />
+      </div>
+      <div className="w-10/12 bg-white p-8">
+        <div className="bg-gray-100 rounded-lg shadow-md">
+          <div className="px-6 py-4 border-b border-gray-200">
+            <div className="text-lg font-bold text-gray-800">
+              Patient Dashboard
             </div>
-            <div className="block">
-              <div className="title">Authorized Doctor</div>
-              {/* <div className="doctor-info">
-                <div className="name">Dr. John Doe{doctor.name}</div>
-                <div className="icons">
-                  <img className="icon" src={info} alt="Info" />
-                  <img className="icon" src={del} alt="Delete" />
+            <div className="mt-2 text-gray-600">
+              Your wallet address is: {currentAccount}
+            </div>
+          </div>
+          <div className="p-6">
+            {/* instrcution */}
+            <div className="text-lg font-bold text-gray-800 mb-2">
+              Instructions:
+            </div>
+            <div className="h-[150px] overflow-y-hidden border-b border-gray-200 mb-4">
+              <p className="text-sm mb-4 text-gray-600">
+                <span className="instruction-char"></span>
+              </p>
+              <p className="text-sm mb-4 text-gray-600">
+                <span className="instruction-char"></span>
+              </p>
+              <p className="text-sm mb-4 text-gray-600">
+                <span className="instruction-char"></span>
+              </p>
+              <p className="text-sm mb-4 text-gray-600">
+                <span className="instruction-char"></span>
+              </p>
+            </div>
+            <div className="flex mb-8 space-x-4">
+              {/* Left-hand side - Doctor List and Doctor Details */}
+              <div className="w-1/2">
+                {/* Give Permission to Doctor */}
+                <div className="mb-8">
+                  <div className="text-lg font-bold text-gray-800 mb-2">
+                    Give Permission to Doctor
+                  </div>
+                  <div className="flex">
+                    <input
+                      className="w-80 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
+                      type="text"
+                      placeholder="Type the wallet address of the doctor"
+                      value={doctorWalletAddress}
+                      onChange={(e) => setDoctorWalletAddress(e.target.value)}
+                    />
+                    <button
+                      className="ml-2 px-4 py-2 bg-blue-500 text-white font-semibold rounded-md hover:bg-blue-600 text-sm"
+                      onClick={givePermission}
+                    >
+                      Confirm
+                    </button>
+                  </div>
+                </div>
+                {/* Authorized Doctor List */}
+                <div>
+                  <div className="text-lg font-bold text-gray-800 mb-2">
+                    <p className="text-lg font-bold text-gray-800">
+                      Authorized Doctors
+                    </p>
+                  </div>
+                  <div className="mt-4">
+                    {authorizedDoctors.length === 0 ? (
+                      <p className="text-gray-600">No authorized doctors</p>
+                    ) : (
+                      authorizedDoctors.map((doctor, index) => (
+                        <div
+                          key={index}
+                          className="flex items-center justify-between border border-gray-200 p-4 rounded-lg mb-4"
+                        >
+                          <div>
+                            <div className="text-gray-600">{doctor}</div>
+                          </div>
+                          <div>
+                            <button
+                              className="px-4 py-2 bg-sky-500/75 text-white font-semibold rounded-md hover:bg-blue-600 text-sm"
+                              onClick={getdoctorInfo(doctor)}
+                            >
+                              <FontAwesomeIcon icon={faInfoCircle} />
+                            </button>
+                            <button
+                              className="px-4 py-2 bg-red-500 text-white font-semibold rounded-md hover:bg-red-600 text-sm ml-2"
+                              onClick={deleteDoctorPermit(doctor)}
+                            >
+                              <FontAwesomeIcon icon={faTrashAlt} />
+                            </button>
+                          </div>
+                        </div>
+                      ))
+                    )}
+                  </div>
                 </div>
               </div>
-              <div className="doc-add">Address: {doctor.address}</div> */}
-              <button className="button" onClick={fetchAuthorizedDoctors}>
-                Fetch Authorized Doctors
-              </button>
-              <div className="doctor-list">
-                {authorizedDoctors.map((doctor) => (
-                  <div className="doctor-info">
-                    <div className="name">{doctor}</div>
-                    <div className="icons">
-                      <img
-                        className="icon"
-                        src={info}
-                        alt="Info"
-                        onClick={getdoctorInfo(doctor)}
-                      />
-                      <img
-                        className="icon"
-                        src={del}
-                        alt="Delete"
-                        onClick={deleteDoctorPermit(doctor)}
-                      />
+              {/* Right-hand side - Doctor Details */}
+              <div className="w-1/2">
+                <div className="text-lg font-bold text-gray-800 mb-2">
+                  Doctor Details:
+                </div>
+                <div className="border border-gray-200 p-4 rounded-lg">
+                  <div className="flex items-center mb-4">
+                    <div className="w-16 h-16 bg-gray-200 rounded-full mr-4"></div>
+                    <div>
+                      <div className="text-lg font-bold text-gray-800">
+                        {doctorInfo.name}
+                      </div>
+                      <div className="text-gray-600">
+                        {doctorInfo.department}
+                      </div>
                     </div>
                   </div>
-                ))}
-              </div>
-            </div>
-          </div>
-          <div className="body-2">
-            <div className="block">
-              <div className="title">Doctor Details:</div>
-              <div className="details">
-                <div
-                  className="pic"
-                  style={{ backgroundImage: `url(${doctorInfo.profilePic})` }}
-                ></div>
-                <div className="info">
-                  <div className="name">{doctorInfo.name}</div>
-                  <div className="position">{doctorInfo.department}</div>
+                  <div className="mb-4">
+                    <div className="flex items-center">
+                      <div className="w-6 h-6 bg-gray-200 rounded-full mr-2"></div>
+                      <div className="text-gray-800">Wallet Address:</div>
+                      <div className="ml-2 text-gray-600">
+                        {doctorInfo.walletAddress}
+                      </div>
+                    </div>
+                    <div className="flex items-center mt-2">
+                      <div className="w-6 h-6 bg-gray-200 rounded-full mr-2"></div>
+                      <div className="text-gray-800">Email:</div>
+                      <div className="ml-2 text-gray-600">
+                        {doctorInfo.email}
+                      </div>
+                    </div>
+                    <div className="flex items-center mt-2">
+                      <div className="w-6 h-6 bg-gray-200 rounded-full mr-2"></div>
+                      <div className="text-gray-800">Registration Number:</div>
+                      <div className="ml-2 text-gray-600">
+                        {doctorInfo.registrationNumber}
+                      </div>
+                    </div>
+                    <div className="flex items-center mt-2">
+                      <div className="w-6 h-6 bg-gray-200 rounded-full mr-2"></div>
+                      <div className="text-gray-800">Hospital:</div>
+                      <div className="ml-2 text-gray-600">
+                        {doctorInfo.hospital}
+                      </div>
+                    </div>
+                  </div>
+                  <button className="mt-4 px-4 py-2 bg-blue-500 text-white font-semibold rounded-md hover:bg-blue-600 text-sm">
+                    Make Appointment
+                  </button>
                 </div>
               </div>
-              <div className="doc-address">
-                <div className="label">Walletaddress: </div>
-                <div className="wallet">{doctorInfo.walletAddress}</div>
-              </div>
-              <div className="doc-email">
-                <div className="label">Email: </div>
-                <div className="email">{doctorInfo.email}</div>
-              </div>
-              <div className="doc-rn">
-                <div className="label">Registration number: </div>
-                <div className="rn">{doctorInfo.registrationNumber}</div>
-              </div>
-              <div className="doc-hospital">
-                <div className="label">Hospital: </div>
-                <div className="hospital">{doctorInfo.hospital}</div>
-              </div>
             </div>
-
-            <button className="button">Make Appointment</button>
           </div>
         </div>
       </div>

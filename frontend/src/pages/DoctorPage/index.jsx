@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
-import * as FaIcons from "react-icons/fa";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPlus, faSearch } from "@fortawesome/free-solid-svg-icons";
 import Cookies from "universal-cookie";
 import { useNavigate } from "react-router-dom";
 import { MedicalAppContractAddress } from "../../config";
@@ -29,7 +30,7 @@ function DoctorPage() {
     // Function to insert words into spans one by one
     const insertWords = async () => {
       const words = [
-        "To view a patient's medical records, enter the patient's MetaMask wallet address and click on the search button. To add a new medical record, click on the green button on the right.",
+        "To view a patient's medical records, enter the patient's MetaMask wallet address and click on the search button. To add a new medical record, click on the + on the right.",
         "Note: You can only view medical records of patients who have authorized you to do so.",
         "Upload medical records to the blockchain requires a gas fee. Please make sure you have enough SepoliaETH in your MetaMask wallet.",
       ];
@@ -328,7 +329,7 @@ function DoctorPage() {
                     className="bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600"
                     type="submit"
                   >
-                    <FaIcons.FaSearch />
+                    <FontAwesomeIcon icon={faSearch} />
                   </button>
                 </form>
               </div>
@@ -344,7 +345,7 @@ function DoctorPage() {
                         className="bg-green-500 text-white py-2 px-4 rounded-md hover:bg-green-600"
                         onClick={handleOpenModal}
                       >
-                        <FaIcons.FaCloudUploadAlt />
+                        <FontAwesomeIcon icon={faPlus} />
                       </button>
                     </th>
                   </tr>
