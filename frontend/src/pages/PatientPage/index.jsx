@@ -10,15 +10,16 @@ import MedicalAppAbi from "../../MedicalApp.json";
 import { ethers } from "ethers";
 
 function PatientPage() {
-  const [currentAccount, setCurrentAccount] = useState("");
-  const [doctorWalletAddress, setDoctorWalletAddress] = useState("");
-  const [authorizedDoctors, setAuthorizedDoctors] = useState([]);
-  const [doctorInfo, setDoctorInfo] = useState("");
   const apiUrl = process.env.REACT_APP_API_URL || "http://localhost:8080";
   const cookies = new Cookies();
   const navigate = useNavigate();
 
-  // get authorized doctors
+  const [currentAccount, setCurrentAccount] = useState("");
+  const [doctorWalletAddress, setDoctorWalletAddress] = useState("");
+  const [authorizedDoctors, setAuthorizedDoctors] = useState([]);
+  const [doctorInfo, setDoctorInfo] = useState("");
+
+  // 1. Fetch the list of authorized doctors
   useEffect(() => {
     const fetchAuthorizedDoctors = async () => {
       try {
@@ -31,8 +32,6 @@ function PatientPage() {
             MedicalAppAbi.abi,
             signer
           );
-
-          // Fetch the list of authorized doctors
           const doctors = await MedicalContract.showDoctorPermit();
           if (doctors.length === 0) {
             return;
@@ -52,13 +51,11 @@ function PatientPage() {
         alert("Error fetching authorized doctors");
       }
     };
-
     fetchAuthorizedDoctors();
   }, [currentAccount]);
 
   useEffect(() => {
     let isMounted = true;
-
     // Function to insert words into spans one by one
     const insertWords = async () => {
       const words = [
@@ -67,7 +64,6 @@ function PatientPage() {
         "To delete a doctor's permission, click on the delete button.",
         "Note: For give permission and remove permission from a doctor, Please make sure you have enough SepoliaETH in your MetaMask wallet.",
       ];
-
       for (let i = 0; i < words.length; i++) {
         const instructionChar =
           document.querySelectorAll(".instruction-char")[i];
@@ -81,15 +77,12 @@ function PatientPage() {
         }
       }
     };
-
     insertWords();
-
     return () => {
       isMounted = false;
     };
   }, []);
 
-  // Checks if user is connected to MetaMask wallet
   useEffect(() => {
     const handleAccountsChanged = (accounts) => {
       if (accounts.length === 0) {
@@ -119,15 +112,12 @@ function PatientPage() {
           alert("MetaMask not detected. Please install MetaMask.");
           return;
         }
-
         // event listener when user switches account
         ethereum.on("accountsChanged", handleAccountsChanged);
         // event listener when user switches network
         ethereum.on("chainChanged", handleChainChanged);
-
         let chainId = await ethereum.request({ method: "eth_chainId" });
         console.log("Connected to chain " + chainId);
-
         // make sure user connects to Sepolia testnet
         const sepoliaId = "0xaa36a7";
         if (chainId !== sepoliaId) {
@@ -135,7 +125,6 @@ function PatientPage() {
           navigate("/");
           return;
         }
-
         // connect to MetaMask wallet
         const accounts = await ethereum.request({
           method: "eth_requestAccounts",
@@ -149,9 +138,7 @@ function PatientPage() {
         navigate("/");
       }
     };
-
     connectAndCheckNetwork();
-
     return () => {
       const { ethereum } = window;
       if (ethereum) {
@@ -159,7 +146,7 @@ function PatientPage() {
         ethereum.removeListener("chainChanged", handleChainChanged);
       }
     };
-  }, []); // Empty dependency array to run the effect only once on mount
+  }, []);
 
   // authenticate user
   useEffect(() => {
@@ -186,6 +173,7 @@ function PatientPage() {
       });
   }, []);
 
+  // 2. Give permission to a doctor
   const givePermission = async (e) => {
     e.preventDefault();
     if (doctorWalletAddress === "") {
@@ -220,7 +208,7 @@ function PatientPage() {
     }
   };
 
-  // get doctor info from the backend server
+  // 3. Get doctor info
   const getdoctorInfo = (doctor) => async (e) => {
     e.preventDefault();
     try {
@@ -243,6 +231,7 @@ function PatientPage() {
     }
   };
 
+  // 4. Delete doctor permit
   const deleteDoctorPermit = (doctor) => async (e) => {
     e.preventDefault();
     try {
