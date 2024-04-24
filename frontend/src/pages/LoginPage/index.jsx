@@ -4,9 +4,26 @@ import NETS from "vanta/src/vanta.net";
 import * as THREE from "three";
 import Cookies from "universal-cookie";
 import "./LoginPage.css";
+import MetaMask from "../../assets/images/metamask.svg";
+// import { GoogleLogin } from "@react-oauth/google";
 
 function LoginPage() {
+  const [walletAddress, setWalletAddress] = useState("");
+  const [userType, setUserType] = useState("patient");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const navigate = useNavigate();
+  const cookies = new Cookies();
   const apiUrl = process.env.REACT_APP_API_URL || "http://localhost:8080";
+  // const responseMessage = (response) => {
+  //   console.log(response);
+  //   navigate(`${userType}`);
+  // };
+
+  // const errorMessage = (error) => {
+  //   console.log(error);
+  // };
   useEffect(() => {
     console.log("API URL:", apiUrl);
     NETS({
@@ -16,9 +33,16 @@ function LoginPage() {
     });
   }, [apiUrl]);
 
-  const navigate = useNavigate();
-  const cookies = new Cookies();
-  const [walletAddress, setWalletAddress] = useState("");
+  useEffect(() => {
+    if (userType === "patient") {
+      setEmail("alicesmith@example.com");
+      setPassword("123");
+    } else if (userType === "doctor") {
+      setEmail("johndoe@example.com");
+      setPassword("123");
+    }
+  }, [userType]);
+
   const handleConnectMetaMask = async () => {
     if (walletAddress) {
       setError("You have already connected your wallet address");
@@ -38,11 +62,6 @@ function LoginPage() {
     }
   };
 
-  const [userType, setUserType] = useState("patient");
-  const [email, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
-
   const handleLogin = (e) => {
     e.preventDefault();
     let emailRegex = /\S+@\S+\.\S+/;
@@ -54,7 +73,6 @@ function LoginPage() {
       setError("Please enter a password");
       return;
     }
-
     fetch(`${apiUrl}/login`, {
       method: "POST",
       headers: {
@@ -116,7 +134,7 @@ function LoginPage() {
               id="email"
               value={email}
               placeholder="Type your email"
-              onChange={(e) => setUsername(e.target.value)}
+              onChange={(e) => setEmail(e.target.value)}
               className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
             />
           </div>
@@ -143,6 +161,7 @@ function LoginPage() {
             >
               Login
             </button>
+            {/* <GoogleLogin onSuccess={responseMessage} onError={errorMessage} /> */}
             <button
               type="button"
               onClick={() => navigate(`/register/${userType}`)}
@@ -159,16 +178,17 @@ function LoginPage() {
             onClick={handleConnectMetaMask}
             className="bg-gray-300 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-400"
           >
-            Connect With MetaMask
+            <img src={MetaMask} alt="MetaMask" className="w-6 inline" /> Connect
+            MetaMask
           </button>
-          <p className="text-sm text-gray-600 mt-2">
+          {/* <p className="text-sm text-gray-600 mt-2">
             <a
               href="your-password-reset-url"
               className="text-blue-500 hover:underline"
             >
               Forgot your password?
             </a>
-          </p>
+          </p> */}
         </div>
       </div>
     </div>
