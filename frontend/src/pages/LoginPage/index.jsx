@@ -105,9 +105,9 @@ function LoginPage() {
         <div className="text-center">
           {/* <img src={logo} alt="Logo" className="mx-auto w-20 mb-4" /> */}
           <h1 className="text-2xl font-bold mb-4">Login</h1>
-          <p className="text-gray-600 mb-4">
+          {/* <p className="text-gray-600 mb-4">
             Please make sure to connect MetaMask!
-          </p>
+          </p> */}
         </div>
         <form onSubmit={handleLogin} autoComplete="on">
           <div className="mb-4">
