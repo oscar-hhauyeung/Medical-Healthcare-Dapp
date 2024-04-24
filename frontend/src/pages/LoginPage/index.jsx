@@ -55,6 +55,7 @@ function LoginPage() {
           method: "eth_requestAccounts",
         });
         setWalletAddress(accounts[0]);
+        window.alert(`Wallet address connected: ${accounts[0]}`);
       } catch (error) {
         setError("MetaMask connection failed");
       }
