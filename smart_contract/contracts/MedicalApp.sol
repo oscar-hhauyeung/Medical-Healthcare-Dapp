@@ -55,16 +55,16 @@ contract MedicalApp {
         }
     }
 
-    function createPatient(address patientAddress) public returns (bool){
-        // if the patient is already registered
-        if (patients[patientAddress].DoctorPermit.length != 0){
-            return false;
-        }
+    // function createPatient(address patientAddress) public returns (bool){
+    //     // if the patient is already registered
+    //     if (patients[patientAddress].DoctorPermit.length != 0){
+    //         return false;
+    //     }
         
-        // register patient and add the sender to the list of permitted doctors
-        patients[patientAddress].DoctorPermit.push(msg.sender);
-        return true;
-    }
+    //     // register patient and add the sender to the list of permitted doctors
+    //     patients[patientAddress].DoctorPermit.push(msg.sender);
+    //     return true;
+    // }
 
     // Nurse functions
     function regDoctorPermit(address doctor_address) public payable returns (bool){

@@ -25,6 +25,7 @@ function LoginPage() {
   //   console.log(error);
   // };
   useEffect(() => {
+    console.log("Your wallet address:", walletAddress);
     console.log("API URL:", apiUrl);
     NETS({
       el: "#background",

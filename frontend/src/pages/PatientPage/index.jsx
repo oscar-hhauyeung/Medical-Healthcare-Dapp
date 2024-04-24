@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Cookies from "universal-cookie";
 import { useNavigate } from "react-router-dom";
-import "./PatientPage.css";
 import Navbar from "../../components/Navbar";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faInfoCircle, faTrashAlt } from "@fortawesome/free-solid-svg-icons";
