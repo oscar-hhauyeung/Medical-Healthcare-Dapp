@@ -12,16 +12,12 @@ function DoctorPage() {
   const apiUrl = process.env.REACT_APP_API_URL || "http://localhost:8080";
   const cookies = new Cookies();
   const navigate = useNavigate();
-  const data = [
-    // { date: "2023-11-27 10:30 AM", info: "Patient had a routine checkup." },
-  ];
-  const [MedicalRecords, setMedicalRecords] = useState(data);
 
+  const [MedicalRecords, setMedicalRecords] = useState();
   const [patientWalletAddress, setPatientWalletAddress] = useState("");
   const [showModal, setShowModal] = useState(false);
   const [newDate, setNewDate] = useState("");
   const [newInfo, setNewInfo] = useState("");
-
   const [currentAccount, setCurrentAccount] = useState("");
 
   useEffect(() => {
@@ -56,7 +52,98 @@ function DoctorPage() {
     };
   }, []);
 
-  // get medical records from blockchain
+  useEffect(() => {
+    const handleAccountsChanged = (accounts) => {
+      if (accounts.length === 0) {
+        // User disconnected their MetaMask account
+        setCurrentAccount("");
+        alert("You disconnected your MetaMask wallet");
+        navigate("/");
+      } else {
+        // User switched or connected a new account
+        setCurrentAccount(accounts[0]);
+      }
+    };
+
+    const handleChainChanged = (chainId) => {
+      if (chainId !== "0xaa36a7") {
+        // User switched to a different network
+        alert("Please connect to the Sepolia testnet");
+        navigate("/");
+        return;
+      }
+    };
+
+    const connectAndCheckNetwork = async () => {
+      try {
+        const { ethereum } = window;
+        if (!ethereum) {
+          alert("MetaMask not detected. Please install MetaMask.");
+          navigate("/");
+          return;
+        }
+        // event listener when user switches account
+        ethereum.on("accountsChanged", handleAccountsChanged);
+        // event listener when user switches network
+        ethereum.on("chainChanged", handleChainChanged);
+        let chainId = await ethereum.request({ method: "eth_chainId" });
+        console.log("Connected to chain " + chainId);
+        // make sure user connects to Sepolia testnet
+        const sepoliaId = "0xaa36a7";
+        if (chainId !== sepoliaId) {
+          alert("Please connect to the Sepolia testnet");
+          navigate("/");
+          return;
+        }
+        // connect to MetaMask wallet
+        const accounts = await ethereum.request({
+          method: "eth_requestAccounts",
+        });
+        console.log("Connected to MetaMask wallet: " + accounts[0]);
+        setCurrentAccount(accounts[0]);
+        console.log(currentAccount);
+      } catch (error) {
+        console.log(error);
+        alert("Error connecting to MetaMask wallet");
+        navigate("/");
+      }
+    };
+    connectAndCheckNetwork();
+    return () => {
+      const { ethereum } = window;
+      if (ethereum) {
+        ethereum.removeListener("accountsChanged", handleAccountsChanged);
+        ethereum.removeListener("chainChanged", handleChainChanged);
+      }
+    };
+  }, []);
+
+  // authenticate user
+  useEffect(() => {
+    fetch(`${apiUrl}/auth-endpoint`, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${cookies.get("auth")}`,
+      },
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.error) {
+          console.log(data.error);
+          navigate("/");
+        }
+        if (data.userType !== "doctor") {
+          console.log("You are not a doctor");
+          navigate("/");
+        }
+        console.log(data);
+      })
+      .catch((error) => {
+        console.log(error.message);
+      });
+  }, []);
+
+  // 1. Get medical records from blockchain
   const handleSearch = async (event) => {
     event.preventDefault();
     if (patientWalletAddress === "") {
@@ -110,7 +197,7 @@ function DoctorPage() {
     }
   };
 
-  // add medical record from frontend to blockchain
+  // 2. Add new medical record to blockchain
   const handleCreate = async (event) => {
     event.preventDefault();
     try {
@@ -176,104 +263,6 @@ function DoctorPage() {
     setShowModal(false);
   };
 
-  // Checks if user is connected to MetaMask wallet
-  useEffect(() => {
-    const handleAccountsChanged = (accounts) => {
-      if (accounts.length === 0) {
-        // User disconnected their MetaMask account
-        setCurrentAccount("");
-        alert("You disconnected your MetaMask wallet");
-        navigate("/");
-      } else {
-        // User switched or connected a new account
-        setCurrentAccount(accounts[0]);
-      }
-    };
-
-    const handleChainChanged = (chainId) => {
-      if (chainId !== "0xaa36a7") {
-        // User switched to a different network
-        alert("Please connect to the Sepolia testnet");
-        navigate("/");
-        return;
-      }
-    };
-
-    const connectAndCheckNetwork = async () => {
-      try {
-        const { ethereum } = window;
-        if (!ethereum) {
-          alert("MetaMask not detected. Please install MetaMask.");
-          navigate("/");
-          return;
-        }
-
-        // event listener when user switches account
-        ethereum.on("accountsChanged", handleAccountsChanged);
-        // event listener when user switches network
-        ethereum.on("chainChanged", handleChainChanged);
-
-        let chainId = await ethereum.request({ method: "eth_chainId" });
-        console.log("Connected to chain " + chainId);
-
-        // make sure user connects to Sepolia testnet
-        const sepoliaId = "0xaa36a7";
-        if (chainId !== sepoliaId) {
-          alert("Please connect to the Sepolia testnet");
-          navigate("/");
-          return;
-        }
-
-        // connect to MetaMask wallet
-        const accounts = await ethereum.request({
-          method: "eth_requestAccounts",
-        });
-        console.log("Connected to MetaMask wallet: " + accounts[0]);
-        setCurrentAccount(accounts[0]);
-        console.log(currentAccount);
-      } catch (error) {
-        console.log(error);
-        alert("Error connecting to MetaMask wallet");
-        navigate("/");
-      }
-    };
-
-    connectAndCheckNetwork();
-
-    return () => {
-      const { ethereum } = window;
-      if (ethereum) {
-        ethereum.removeListener("accountsChanged", handleAccountsChanged);
-        ethereum.removeListener("chainChanged", handleChainChanged);
-      }
-    };
-  }, []); // Empty dependency array to run the effect only once on mount
-
-  // authenticate user
-  useEffect(() => {
-    fetch(`${apiUrl}/auth-endpoint`, {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${cookies.get("auth")}`,
-      },
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.error) {
-          console.log(data.error);
-          navigate("/");
-        }
-        if (data.userType !== "doctor") {
-          console.log("You are not a doctor");
-          navigate("/");
-        }
-        console.log(data);
-      })
-      .catch((error) => {
-        console.log(error.message);
-      });
-  }, []);
-
   return (
     <div className="bg-gray-100 min-h-screen grid grid-cols-10">
       {/* Navbar */}
@@ -292,24 +281,13 @@ function DoctorPage() {
             {/* Instruction */}
             <div className="p-6 h-[200px] overflow-y-hidden">
               <p className="text-sm mb-4 text-gray-600">
-                <span className="instruction-char">
-                  {/* To view a patient's medical records, enter the patient's
-                  MetaMask wallet address and click on the search button. To add
-                  a new medical record, click on the green button on the right. */}
-                </span>
+                <span className="instruction-char"></span>
               </p>
               <p className="text-sm mb-4 text-gray-600">
-                <span className="instruction-char">
-                  {/* Note: You can only view medical records of patients who have
-                  authorized you to do so. */}
-                </span>
+                <span className="instruction-char"></span>
               </p>
               <p className="text-sm mb-4 text-gray-600">
-                <span className="instruction-char">
-                  {/* Upload medical records to the blockchain requires a gas fee.
-                  Please make sure you have enough SepoliaETH in your MetaMask
-                  wallet. */}
-                </span>
+                <span className="instruction-char"></span>
               </p>
             </div>
             <div className="p-6 h-[500px]">
@@ -369,7 +347,6 @@ function DoctorPage() {
                         className="relative top-0 float-right"
                         onClick={handleCloseModal}
                       >
-                        {/* close font awesome icon */}
                         <FontAwesomeIcon icon={faTimes} />
                       </button>
                       <h2 className="text-lg font-bold mb-4">New Records</h2>
