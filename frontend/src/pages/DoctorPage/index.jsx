@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPlus, faSearch } from "@fortawesome/free-solid-svg-icons";
+import { faPlus, faSearch, faTimes } from "@fortawesome/free-solid-svg-icons";
 import Cookies from "universal-cookie";
 import { useNavigate } from "react-router-dom";
 import { MedicalAppContractAddress } from "../../config";
@@ -353,8 +353,8 @@ function DoctorPage() {
                 <tbody>
                   {MedicalRecords?.map((item, index) => (
                     <tr key={index} className="border-b border-gray-300">
-                      <td className="px-4 py-2">{item.date}</td>
-                      <td className="px-4 py-2" colSpan="2">
+                      <td className="px-4 py-2 text-center">{item.date}</td>
+                      <td className="px-4 py-2 text-center" colSpan="1">
                         {item.info}
                       </td>
                     </tr>
@@ -365,6 +365,13 @@ function DoctorPage() {
                 <div className="fixed inset-0 flex items-center justify-center bg-gray-700 bg-opacity-50">
                   <div className="bg-white p-6 rounded-md shadow-md">
                     <form onSubmit={handleCreate}>
+                      <button
+                        className="relative top-0 float-right"
+                        onClick={handleCloseModal}
+                      >
+                        {/* close font awesome icon */}
+                        <FontAwesomeIcon icon={faTimes} />
+                      </button>
                       <h2 className="text-lg font-bold mb-4">New Records</h2>
                       <input
                         className="border border-gray-300 rounded-md px-4 py-2 mb-2 w-full"
@@ -386,12 +393,6 @@ function DoctorPage() {
                           type="submit"
                         >
                           Create
-                        </button>
-                        <button
-                          className="bg-gray-400 text-white py-2 px-4 rounded-md hover:bg-gray-500"
-                          onClick={handleCloseModal}
-                        >
-                          Close
                         </button>
                       </div>
                     </form>
