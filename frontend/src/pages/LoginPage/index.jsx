@@ -5,6 +5,7 @@ import * as THREE from "three";
 import Cookies from "universal-cookie";
 import "./LoginPage.css";
 import MetaMask from "../../assets/images/metamask.svg";
+import axios from "axios";
 // import { GoogleLogin } from "@react-oauth/google";
 
 function LoginPage() {
@@ -75,24 +76,21 @@ function LoginPage() {
       setError("Please enter a password");
       return;
     }
-    fetch(`${apiUrl}/login`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ userType, email, password }),
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.error) {
-          setError(data.error);
-        } else {
-          cookies.set("auth", data.accessToken, { path: "/" });
-          navigate(`${userType}`);
-        }
+    axios
+      .post(`${apiUrl}/auth/login`, {
+        email,
+        password,
+        userType,
+      })
+      .then((response) => {
+        console.log(response.data);
+        cookies.set("token", response.data.token, { path: "/" });
+        cookies.set("userType", userType, { path: "/" });
+        navigate(`/${userType}`);
       })
       .catch((error) => {
-        setError(error.message);
+        console.error(error);
+        setError("Invalid email or password");
       });
   };
 
