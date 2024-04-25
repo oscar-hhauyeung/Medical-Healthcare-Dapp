@@ -34,12 +34,11 @@ app.use(
       "https://medical-healthcare-dapp-1030.vercel.app",
       "http://localhost:3000",
     ],
-    methods: ["GET", "POST"],
+    methods: ["GET", "POST", "OPTIONS"],
     credentials: true,
   })
 );
 
-// Middleware to handle preflight requests
 app.use((req, res, next) => {
   if (req.method === "OPTIONS") {
     return res.status(200).end();
