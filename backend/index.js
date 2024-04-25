@@ -32,7 +32,7 @@ app.use(
   cors({
     origin: [
       "https://medical-healthcare-dapp-1030.vercel.app",
-      "https://localhost:3000",
+      "http://localhost:3000",
     ],
     methods: ["GET", "POST"],
     credentials: true,
