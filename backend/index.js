@@ -39,6 +39,14 @@ app.use(
   })
 );
 
+// Middleware to handle preflight requests
+app.use((req, res, next) => {
+  if (req.method === "OPTIONS") {
+    return res.status(200).end();
+  }
+  next();
+});
+
 app.listen(PORT, () => {
   console.log(`Server is listening on port ${PORT}`);
 });
