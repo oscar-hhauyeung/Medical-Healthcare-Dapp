@@ -12,7 +12,7 @@
       "headers": [
         {
           "key": "Access-Control-Allow-Origin",
-          "value": "http://medical-healthcare-dapp-1030.vercel.app"
+          "value": "https://medical-healthcare-dapp-1030.vercel.app"
         },
         {
           "key": "Access-Control-Allow-Credentials",
