@@ -5,7 +5,7 @@ import * as THREE from "three";
 import Cookies from "universal-cookie";
 import "./LoginPage.css";
 import MetaMask from "../../assets/images/metamask.svg";
-import axios from "axios";
+// import axios from "axios";
 // import { GoogleLogin } from "@react-oauth/google";
 
 function LoginPage() {
@@ -76,11 +76,15 @@ function LoginPage() {
       setError("Please enter a password");
       return;
     }
-    // Use Axios instead of fetch
-    axios
-      .post(`${apiUrl}/login`, { userType, email, password })
-      .then((response) => {
-        const data = response.data;
+    fetch(`${apiUrl}/login`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ userType, email, password }),
+    })
+      .then((res) => res.json())
+      .then((data) => {
         if (data.error) {
           setError(data.error);
         } else {
