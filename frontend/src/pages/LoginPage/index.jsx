@@ -76,21 +76,20 @@ function LoginPage() {
       setError("Please enter a password");
       return;
     }
+    // Use Axios instead of fetch
     axios
-      .post(`${apiUrl}/auth/login`, {
-        email,
-        password,
-        userType,
-      })
+      .post(`${apiUrl}/login`, { userType, email, password })
       .then((response) => {
-        console.log(response.data);
-        cookies.set("token", response.data.token, { path: "/" });
-        cookies.set("userType", userType, { path: "/" });
-        navigate(`/${userType}`);
+        const data = response.data;
+        if (data.error) {
+          setError(data.error);
+        } else {
+          cookies.set("auth", data.accessToken, { path: "/" });
+          navigate(`${userType}`);
+        }
       })
       .catch((error) => {
-        console.error(error);
-        setError("Invalid email or password");
+        setError(error.message);
       });
   };
 
