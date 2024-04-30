@@ -94,6 +94,7 @@ function LoginPage() {
       })
       .catch((error) => {
         setError(error.message);
+        window.alert(error.message);
       });
   };
 
