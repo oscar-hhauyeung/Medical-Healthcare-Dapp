@@ -34,7 +34,7 @@ app.use(
       "https://medical-healthcare-dapp-1030.vercel.app",
       "http://localhost:3000",
     ],
-    methods: ["GET", "POST", "OPTIONS"],
+    methods: ["GET", "POST"],
     credentials: true,
   })
 );
