@@ -6,15 +6,10 @@
       "use": "@vercel/node"
     }
   ],
-  "rewrites": [{ "source": "/(.*)", "destination": "/index.js" }],
-  "headers": [
+  "rewrites": [
     {
-      "source": "/(.*)",
-      "headers": [{ "key": "Access-Control-Allow-Origin", "value": "*" }]
-    },
-    {
-      "source": "https://medical-healthcare-dapp-1030.vercel.app",
-      "headers": [{ "key": "Access-Control-Allow-Origin", "value": "*" }]
+      "src": "/(.*)",
+      "dest": "/"
     }
   ]
 }
