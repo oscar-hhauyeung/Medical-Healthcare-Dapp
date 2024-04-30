@@ -28,23 +28,18 @@ function authenticateToken(req, res, next) {
 app.use(express.json());
 
 // CORS configuration
-app.use(
-  cors({
-    origin: [
-      "https://medical-healthcare-dapp-1030.vercel.app",
-      "http://localhost:3000",
-    ],
-    methods: ["GET", "POST"],
-    credentials: true,
-  })
-);
+// app.use(
+//   cors({
+//     origin: [
+//       "https://medical-healthcare-dapp-1030.vercel.app",
+//       "http://localhost:3000",
+//     ],
+//     methods: ["GET", "POST"],
+//     credentials: true,
+//   })
+// );
 
-app.use((req, res, next) => {
-  if (req.method === "OPTIONS") {
-    return res.status(200).end();
-  }
-  next();
-});
+app.use(cors());
 
 app.listen(PORT, () => {
   console.log(`Server is listening on port ${PORT}`);
