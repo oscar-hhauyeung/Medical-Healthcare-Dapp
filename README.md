@@ -13,5 +13,5 @@ My first Solidity project to develop a decentralized medical healthcare DApp, en
 
 ## Future Development Plan
 - **Appointment Management Function**: We'll use ERC tokens to handle appointments, making everything safer and smoother for users. These tokens can also help with payments or other transactions.
-- **UI Improvement**: We're going to keep making our app easier to use and nicer to look at. This means listening to what users say and making changes to how the app looks and works.
+- **UI UX Improvement**: We're going to keep making our app easier to use and nicer to look at. This means listening to what users say and making changes to how the app looks and works.
 - **Automatic PDFs for Medical Records**: When a doctor creates a new record, we'll automatically turn it into a PDF and save it securely on the blockchain. This keeps things organized and safe for everyone involved.
