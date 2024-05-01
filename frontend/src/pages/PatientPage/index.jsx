@@ -286,6 +286,12 @@ function PatientPage() {
     }
   };
 
+  // 6. Make appointment
+  const handleMakeAppointment = (doctorInfo) => {
+    console.log("Make appointment with doctor: " + doctorInfo.name);
+    alert("under development");
+  };
+
   return (
     <div className="flex h-screen">
       <div className="w-2/12 bg-gray-200">
@@ -436,7 +442,10 @@ function PatientPage() {
                       </div>
                     </div>
                   </div>
-                  <button className="mt-4 px-4 py-2 bg-blue-500 text-white font-semibold rounded-md hover:bg-blue-600 text-sm">
+                  <button
+                    className="mt-4 px-4 py-2 bg-blue-500 text-white font-semibold rounded-md hover:bg-blue-600 text-sm"
+                    onClick={() => handleMakeAppointment(doctorInfo)}
+                  >
                     Make Appointment
                   </button>
                 </div>
