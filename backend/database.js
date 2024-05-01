@@ -1,4 +1,4 @@
-require("dotenv").config();
+// require("dotenv").config();
 const { MongoClient } = require("mongodb");
 
 const client = new MongoClient(process.env.DB_CONNECTION_KEY);
