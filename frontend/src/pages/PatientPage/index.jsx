@@ -279,7 +279,7 @@ function PatientPage() {
         method: "eth_requestAccounts",
       });
       setCurrentAccount(accounts[0]);
-      alert(`Wallet address connected: ${accounts[0]}`);
+      // alert(`Wallet address connected: ${accounts[0]}`);
     } catch (error) {
       console.log(error);
       alert("MetaMask connection failed");
@@ -302,14 +302,14 @@ function PatientPage() {
                 ? "Please connect your MetaMask wallet"
                 : `Your wallet address is: ${currentAccount}`}
             </div>
-            {/* <button onClick={handleConnectMetaMask} className="mt-4">
+            <button onClick={handleConnectMetaMask} className="mt-4">
               <img
                 src={MetaMask}
                 alt="MetaMask Fox"
                 className="w-8 h-8 inline"
               />
               <span className="ml-2 text-blue-500">Connect MetaMask</span>
-            </button> */}
+            </button>
           </div>
           <div className="p-6">
             {/* instrcution */}
