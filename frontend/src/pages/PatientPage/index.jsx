@@ -7,6 +7,7 @@ import { faInfoCircle, faTrashAlt } from "@fortawesome/free-solid-svg-icons";
 import { MedicalAppContractAddress } from "../../config";
 import MedicalAppAbi from "../../MedicalApp.json";
 import { ethers } from "ethers";
+import MetaMask from "../../assets/images/metamask.svg";
 
 function PatientPage() {
   const apiUrl = process.env.REACT_APP_API_URL || "http://localhost:8080";
@@ -44,10 +45,11 @@ function PatientPage() {
           setAuthorizedDoctors(doctors);
         } else {
           alert("Ethereum object doesn't exist!");
+          // navigate("/");
         }
       } catch (error) {
         console.error(error);
-        alert("Error fetching authorized doctors");
+        // alert("Error fetching authorized doctors");
       }
     };
     fetchAuthorizedDoctors();
@@ -88,7 +90,7 @@ function PatientPage() {
         // User disconnected their MetaMask account
         setCurrentAccount("");
         alert("You disconnected your MetaMask wallet");
-        navigate("/");
+        // navigate("/");
       } else {
         // User switched or connected a new account
         setCurrentAccount(accounts[0]);
@@ -99,7 +101,7 @@ function PatientPage() {
       if (chainId !== "0xaa36a7") {
         // User switched to a different network
         alert("Please connect to the Sepolia testnet");
-        navigate("/");
+        // navigate("/");
         return;
       }
     };
@@ -121,7 +123,7 @@ function PatientPage() {
         const sepoliaId = "0xaa36a7";
         if (chainId !== sepoliaId) {
           alert("Please connect to the Sepolia testnet");
-          navigate("/");
+          // navigate("/");
           return;
         }
         // connect to MetaMask wallet
@@ -133,8 +135,8 @@ function PatientPage() {
         console.log(currentAccount);
       } catch (error) {
         console.log(error);
-        alert("Error connecting to MetaMask wallet");
-        navigate("/");
+        // alert("Error connecting to MetaMask wallet");
+        // navigate("/");
       }
     };
     connectAndCheckNetwork();
@@ -261,6 +263,29 @@ function PatientPage() {
     }
   };
 
+  // 5.connect to MetaMask wallet button
+  const handleConnectMetaMask = async () => {
+    if (currentAccount) {
+      alert("You have already connected your wallet address");
+      return;
+    }
+    try {
+      const { ethereum } = window;
+      if (!ethereum) {
+        alert("MetaMask not detected. Please install MetaMask.");
+        return;
+      }
+      const accounts = await ethereum.request({
+        method: "eth_requestAccounts",
+      });
+      setCurrentAccount(accounts[0]);
+      alert(`Wallet address connected: ${accounts[0]}`);
+    } catch (error) {
+      console.log(error);
+      alert("MetaMask connection failed");
+    }
+  };
+
   return (
     <div className="flex h-screen">
       <div className="w-2/12 bg-gray-200">
@@ -273,8 +298,18 @@ function PatientPage() {
               Patient Dashboard
             </div>
             <div className="mt-2 text-gray-600">
-              Your wallet address is: {currentAccount}
+              {currentAccount === ""
+                ? "Please connect your MetaMask wallet"
+                : `Your wallet address is: ${currentAccount}`}
             </div>
+            {/* <button onClick={handleConnectMetaMask} className="mt-4">
+              <img
+                src={MetaMask}
+                alt="MetaMask Fox"
+                className="w-8 h-8 inline"
+              />
+              <span className="ml-2 text-blue-500">Connect MetaMask</span>
+            </button> */}
           </div>
           <div className="p-6">
             {/* instrcution */}

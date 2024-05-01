@@ -16,7 +16,8 @@ function LoginPage() {
   const [error, setError] = useState("");
   const navigate = useNavigate();
   const cookies = new Cookies();
-  const apiUrl = process.env.REACT_APP_API_URL || "http://localhost:8080";
+  // const apiUrl = process.env.REACT_APP_API_URL || "http://localhost:8080";
+  const apiUrl = "https://medical-healthcare-dapp.vercel.app";
 
   // const responseMessage = (response) => {
   //   console.log(response);
