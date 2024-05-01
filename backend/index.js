@@ -38,6 +38,69 @@ app.use(express.json());
 //     credentials: true,
 //   })
 // );
+const allowCors = (fn) => async (req, res) => {
+  res.setHeader("Access-Control-Allow-Credentials", true);
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  // another common pattern
+  // res.setHeader('Access-Control-Allow-Origin', req.headers.origin);
+  res.setHeader(
+    "Access-Control-Allow-Methods",
+    "GET,OPTIONS,PATCH,DELETE,POST,PUT"
+  );
+  res.setHeader(
+    "Access-Control-Allow-Headers",
+    "X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version"
+  );
+  if (req.method === "OPTIONS") {
+    res.status(200).end();
+    return;
+  }
+  return await fn(req, res);
+};
+
+const handleLogin = async (req, res) => {
+  let { userType, email, password } = req.body;
+  try {
+    // Connect to the database
+    await connectDb();
+    const db = getDb();
+
+    // Check if user exists
+    const user = await db.collection(userType).findOne({ email: email });
+
+    if (!user) {
+      console.log("User not found.");
+      return res.status(400).send({ error: "User not found." });
+    }
+
+    // Check if password is correct
+    const passwordMatch = await bcrypt.compare(password, user.password);
+
+    if (!passwordMatch) {
+      console.log("Incorrect password.");
+      return res.status(400).send({ error: "Incorrect password." });
+    } else {
+      // Generate access token
+      const accessToken = jwt.sign(
+        { userType: userType, userData: user },
+        process.env.ACCESS_TOKEN_SECRET,
+        { expiresIn: "15m" }
+      );
+
+      // Generate refresh token
+      // const refreshToken = jwt.sign(user, process.env.REFRESH_TOKEN_SECRET);
+
+      console.log("User logged in successfully.");
+      res.status(200).json({
+        success: "User logged in successfully.",
+        accessToken: accessToken,
+      });
+    }
+  } catch (error) {
+    console.error("Error logging in:", error);
+    res.status(500).send({ error: "An error occured while trying to log in." });
+  }
+};
 
 app.use(cors());
 
@@ -85,6 +148,8 @@ app.get("/doctor-info/:doctorAddress", async (req, res) => {
   }
 });
 
+app.post("/login", allowCors(handleLogin));
+
 app.post("/register", async (req, res) => {
   let { userType, ...userData } = req.body;
   try {
@@ -119,46 +184,46 @@ app.post("/register", async (req, res) => {
   }
 });
 
-app.post("/login", async (req, res) => {
-  let { userType, email, password } = req.body;
-  try {
-    // Connect to the database
-    await connectDb();
-    const db = getDb();
+// app.post("/login", async (req, res) => {
+//   let { userType, email, password } = req.body;
+//   try {
+//     // Connect to the database
+//     await connectDb();
+//     const db = getDb();
 
-    // Check if user exists
-    const user = await db.collection(userType).findOne({ email: email });
+//     // Check if user exists
+//     const user = await db.collection(userType).findOne({ email: email });
 
-    if (!user) {
-      console.log("User not found.");
-      return res.status(400).send({ error: "User not found." });
-    }
+//     if (!user) {
+//       console.log("User not found.");
+//       return res.status(400).send({ error: "User not found." });
+//     }
 
-    // Check if password is correct
-    const passwordMatch = await bcrypt.compare(password, user.password);
+//     // Check if password is correct
+//     const passwordMatch = await bcrypt.compare(password, user.password);
 
-    if (!passwordMatch) {
-      console.log("Incorrect password.");
-      return res.status(400).send({ error: "Incorrect password." });
-    } else {
-      // Generate access token
-      const accessToken = jwt.sign(
-        { userType: userType, userData: user },
-        process.env.ACCESS_TOKEN_SECRET,
-        { expiresIn: "15m" }
-      );
+//     if (!passwordMatch) {
+//       console.log("Incorrect password.");
+//       return res.status(400).send({ error: "Incorrect password." });
+//     } else {
+//       // Generate access token
+//       const accessToken = jwt.sign(
+//         { userType: userType, userData: user },
+//         process.env.ACCESS_TOKEN_SECRET,
+//         { expiresIn: "15m" }
+//       );
 
-      // Generate refresh token
-      // const refreshToken = jwt.sign(user, process.env.REFRESH_TOKEN_SECRET);
+//       // Generate refresh token
+//       // const refreshToken = jwt.sign(user, process.env.REFRESH_TOKEN_SECRET);
 
-      console.log("User logged in successfully.");
-      res.status(200).json({
-        success: "User logged in successfully.",
-        accessToken: accessToken,
-      });
-    }
-  } catch (error) {
-    console.error("Error logging in:", error);
-    res.status(500).send({ error: "An error occured while trying to log in." });
-  }
-});
+//       console.log("User logged in successfully.");
+//       res.status(200).json({
+//         success: "User logged in successfully.",
+//         accessToken: accessToken,
+//       });
+//     }
+//   } catch (error) {
+//     console.error("Error logging in:", error);
+//     res.status(500).send({ error: "An error occured while trying to log in." });
+//   }
+// });
